@@ -35,7 +35,7 @@ _[Reading Guide: 2-Column Paper]_
 
 ## Installation
 
-1.  Download the latest `.xpi` file from the [releases page](https://github.com/d-nader/zotero-reading-guide/releases/new) (right-click and "Save as..." in Firefox)
+1.  Download the latest `.xpi` file from the [releases page](https://github.com/d-nader/zotero-reading-guide/releases) (right-click and "Save as..." in Firefox)
 2.  In Zotero, go to **Tools -> Plugins**.
 3.  Click on the wheel and choose "Install Plugin From File" and select the `.xpi` file
 4.  Restart Zotero
