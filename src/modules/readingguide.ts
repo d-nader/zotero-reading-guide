@@ -44,14 +44,14 @@ export function initReadingGuide() {
         line?.remove();
         if (pdfDoc && mouseFn)
           pdfDoc.removeEventListener("mousemove", mouseFn, { capture: true });
-        
+
         // FIX: If we cancel a pending frame, we MUST reset the variable to null
         // otherwise the next 'inject' thinks we are still busy and deadlocks.
         if (rafId) {
-            win.cancelAnimationFrame(rafId);
-            rafId = null; 
+          win.cancelAnimationFrame(rafId);
+          rafId = null;
         }
-        
+
         line = mouseFn = pdfDoc = null;
       };
 
