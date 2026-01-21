@@ -43,4 +43,5 @@ _[Reading Guide: 2-Column Paper]_
 ## Changelog
 
 `v.0.1.1`: Updated the UI to better work on Windows
+
 `v.0.1.0`: Initial release
