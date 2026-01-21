@@ -17,6 +17,8 @@ const COLORS = [
 // icons
 const ICON_FULL = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="14" height="8" rx="1"/></svg>`;
 const ICON_COLS = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="2" width="6" height="12" rx="1"/><rect x="9" y="2" width="6" height="12" rx="1"/></svg>`;
+// New cleaner chevron arrow
+const ICON_DOWN = `<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6L8 11L13 6"/></svg>`;
 
 export function initReadingGuide() {
   Zotero.Reader.registerEventListener(
@@ -42,7 +44,14 @@ export function initReadingGuide() {
         line?.remove();
         if (pdfDoc && mouseFn)
           pdfDoc.removeEventListener("mousemove", mouseFn, { capture: true });
-        if (rafId) win.cancelAnimationFrame(rafId);
+        
+        // FIX: If we cancel a pending frame, we MUST reset the variable to null
+        // otherwise the next 'inject' thinks we are still busy and deadlocks.
+        if (rafId) {
+            win.cancelAnimationFrame(rafId);
+            rafId = null; 
+        }
+        
         line = mouseFn = pdfDoc = null;
       };
 
@@ -104,10 +113,11 @@ export function initReadingGuide() {
         mouseFn = (e: MouseEvent) => {
           if (!line) return;
 
+          // If rafId is not null, it means a frame is already pending.
           if (rafId) return;
 
           rafId = win.requestAnimationFrame(() => {
-            rafId = null;
+            rafId = null; // Unlock for the next frame
             if (!line) return;
 
             if (line.style.transition === "none")
@@ -193,19 +203,41 @@ export function initReadingGuide() {
       }, 1000);
 
       // --- UI Setup ---
+      // We use a wrapper with gap:0 to make them look like one joined button
       const wrapper = doc.createElement("div");
       wrapper.style.cssText =
-        "position:relative; display:flex; align-items:center";
+        "position:relative; display:flex; align-items:center; gap:0;";
 
+      // 1. The Main Toggle Button
       const mainBtn = doc.createElement("button");
       mainBtn.className = `toolbar-button ${config.addonRef}-reader-button`;
-      mainBtn.title = "Toggle Guide (Alt+R)\nRight-click for options";
-      mainBtn.style.cssText = "min-width:40px; text-align:center";
+      mainBtn.title = "Toggle Guide (Alt+R)";
+      // FIX: Padding right adjusted to 4px to match arrow side
+      mainBtn.style.cssText =
+        "min-width:30px; text-align:center; border-top-right-radius:0; border-bottom-right-radius:0; padding-right:4px;";
       mainBtn.textContent = "Off";
       mainBtn.onclick = toggle;
 
-      mainBtn.oncontextmenu = (e) => {
+      // 2. The Separator Line (New Element)
+      // Height reduced to 12px. Color is neutral gray with low opacity.
+      const sep = doc.createElement("div");
+      sep.style.cssText =
+        "width:1px; height:12px; background-color:rgba(127, 127, 127, 0.3); margin:0;";
+
+      // 3. The Arrow Button (Triggers Menu)
+      const arrowBtn = doc.createElement("button");
+      arrowBtn.className = `toolbar-button ${config.addonRef}-arrow-button`;
+      arrowBtn.title = "Options";
+      arrowBtn.innerHTML = ICON_DOWN;
+      // FIX: Padding left adjusted to 4px. No border needed now.
+      arrowBtn.style.cssText =
+        "min-width:16px; padding:0 4px; border-top-left-radius:0; border-bottom-left-radius:0; display:flex; align-items:center; justify-content:center;";
+
+      // MENU LOGIC (Now triggered by Left Click on Arrow)
+      arrowBtn.onclick = (e) => {
         e.preventDefault();
+        e.stopPropagation();
+
         if (menu) {
           menu.remove();
           menu = null;
@@ -222,7 +254,8 @@ export function initReadingGuide() {
         Object.assign(menu.style, {
           position: "absolute",
           top: "115%",
-          left: "-50%",
+          // Align menu with the left of the button group
+          left: "0",
           backgroundColor: "#fff",
           border: "1px solid #ccc",
           borderRadius: "4px",
@@ -297,6 +330,8 @@ export function initReadingGuide() {
       };
 
       wrapper.appendChild(mainBtn);
+      wrapper.appendChild(sep); // Inject the separator
+      wrapper.appendChild(arrowBtn);
       append(wrapper);
     },
     addon.data.config.addonID,

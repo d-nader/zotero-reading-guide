@@ -10,18 +10,18 @@ A simple tool to help you focus when reading long papers. It adds a highlighter 
 - **Focus ruler:** A transparent colored line follows your mouse to guide your reading
 - **2-column mode [beta]:** A mode to read two-column paper that snaps the guide to the text width (at least it that's what it is supposed to do)
 - **Keyboard shortcuts:** Toggle the guide on/off and change the mode without using the UI
-- **Custom colors:** Right-click the `Off/On` button to choose from standard highlighting colors (yellow, blue, green, etc.)
+- **Custom colors:** Choose from standard highlighting colors (yellow, blue, green, etc.)
 
 ## How to use
 
 1.  Open a PDF in Zotero
 2.  Click the `Off` button in the toolbar to turn it on
-3.  **Right-click** the button to change colors or switch to "column mode".
+3.  Click on the arrow next to the `Off/On` button to change colors or switch the "column mode"
 
 **Shortcuts:**
 
-- `Alt + R` (`Option` + `R` on Mac): Toggle on/off
-- `Alt + C` (`Option` + `C` on Mac): Toggle column mode
+- `Alt`+`R` (Windows) or `Option`+`R` (Mac): Toggle on/off
+- `Alt`+`C` (Windows) or `Option`+`C` (Mac): Toggle column mode
 
 ## Examples
 
@@ -42,4 +42,5 @@ _[Reading Guide: 2-Column Paper]_
 
 ## Changelog
 
+`v.0.1.1`: Updated the UI to better work on Windows
 `v.0.1.0`: Initial release
